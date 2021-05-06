@@ -1,0 +1,583 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://virtserver.swaggerhub.com/private1481/DiscountCodes/1.0.0"
+  } ],
+  "info" : {
+    "version" : "1.0.0",
+    "title" : "Billogram DiscountCode API",
+    "description" : "Documents the API for an imaginary Discount Code micro service"
+  },
+  "paths" : {
+    "/companies" : {
+      "post" : {
+        "summary" : "create company",
+        "operationId" : "createCompany",
+        "description" : "Creates a company for discounts",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Company"
+              }
+            }
+          },
+          "description" : "Create a company",
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, could not create company"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          },
+          "403" : {
+            "description" : "Not authorized to create"
+          }
+        }
+      },
+      "get" : {
+        "summary" : "search for companies",
+        "operationId" : "searchCompanies",
+        "description" : "Searches for companies by name. Only returns companies the user is authorized for.",
+        "parameters" : [ {
+          "name" : "companyname",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          },
+          "required" : false,
+          "description" : "Name of company you are looking for. Exact match. If name is not given, returns id of all found companies authorized for."
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Company"
+                  }
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No company found"
+          }
+        }
+      }
+    },
+    "/offers" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/companyidquery"
+      } ],
+      "post" : {
+        "summary" : "create offer",
+        "operationId" : "createOffer",
+        "description" : "Creates a discount offer",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Offer"
+              }
+            }
+          },
+          "description" : "Create an offer with the given parameters",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Offer"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, could not create offer"
+          },
+          "403" : {
+            "description" : "Not authorized to create"
+          }
+        }
+      },
+      "get" : {
+        "summary" : "get company offers",
+        "operationId" : "getCompanyOffers",
+        "description" : "Retrieves offers for a given company.",
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Offer"
+                  }
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No offer found"
+          }
+        }
+      }
+    },
+    "/offers/{offeridpath}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/companyidquery"
+      }, {
+        "$ref" : "#/components/parameters/offeridpath"
+      } ],
+      "get" : {
+        "summary" : "get company offer",
+        "operationId" : "getCompanyOffer",
+        "description" : "Retrieves a specific offer for given company.",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Offer"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "No offer found"
+          },
+          "403" : {
+            "description" : "Not authorized access"
+          }
+        }
+      }
+    },
+    "/discountcodes" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/companyidquery"
+      } ],
+      "post" : {
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/accountidqueryoptional"
+        }, {
+          "in" : "query",
+          "name" : "results",
+          "description" : "Indicate if we want this method to return the created code object(s). False may be useful when just precreating codes",
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        }, {
+          "in" : "query",
+          "name" : "instances",
+          "description" : "Number of discount codes to create",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 1,
+            "maximum" : 10000,
+            "default" : 1
+          }
+        } ],
+        "summary" : "create discount codes",
+        "operationId" : "createDiscountCodes",
+        "description" : "Creates one or more (as requested) discount codes in the system for the given company. If an account id is given the code is set to the valid state (activated). Otherwise it is put in the dormant state (precreated) and therefore available for later fetching/activation.",
+        "responses" : {
+          "201" : {
+            "description" : "items created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Discount"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, cannot create codes"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          },
+          "403" : {
+            "description" : "Not authorized to create discount codes"
+          }
+        }
+      },
+      "get" : {
+        "summary" : "search for discount codes",
+        "operationId" : "searchDiscountCodes",
+        "description" : "By passing in the appropriate options, you can search for available discount codes in the system",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/companyidqueryoptional"
+        }, {
+          "$ref" : "#/components/parameters/accountidqueryoptional"
+        }, {
+          "$ref" : "#/components/parameters/offeridqueryoptional"
+        }, {
+          "in" : "query",
+          "name" : "fromdate",
+          "description" : "define the earliest date/time of searched discounts",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "datetime"
+          }
+        }, {
+          "in" : "query",
+          "name" : "todate",
+          "description" : "define the earliest date/time of searched discounts",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "datetime"
+          }
+        }, {
+          "in" : "query",
+          "name" : "code",
+          "description" : "Discount code",
+          "schema" : {
+            "type" : "string"
+          },
+          "required" : false
+        }, {
+          "in" : "query",
+          "name" : "start",
+          "description" : "Start point in result set. For paging together with limit. 0 based (first record is 0)",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "minimum" : 0,
+            "maximum" : 100
+          },
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Discount"
+                  }
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "No discount found"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      }
+    },
+    "/discountcodes/precreated" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/companyidquery"
+      }, {
+        "in" : "query",
+        "name" : "companyid",
+        "description" : "Id of the company giving the discount code",
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "required" : true
+      } ],
+      "post" : {
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "accountid",
+          "description" : "Account id for the fetched discount code",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "required" : true
+        } ],
+        "summary" : "fetch precreated discount code",
+        "operationId" : "fetchDiscountCode",
+        "description" : "Fetch a precreated unused discount code for a given account Creates one or more (as requested) discount codes in the system for the given company",
+        "responses" : {
+          "201" : {
+            "description" : "Precreated code retrieved",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Discount"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, cannot fetch codes"
+          },
+          "403" : {
+            "description" : "Not authorized to fetch discount code"
+          },
+          "500" : {
+            "description" : "No precreated unused codes available"
+          }
+        }
+      }
+    },
+    "/discountcodes/{discountid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/discountidpath"
+      } ],
+      "post" : {
+        "summary" : "change discount status",
+        "operationId" : "setDiscountStatus",
+        "description" : "Sets status of a specific discount record. May also attach an account to the discount.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/accountidqueryoptional"
+        }, {
+          "in" : "query",
+          "name" : "status",
+          "description" : "Wished new status. If not given the account id parameter is required and status will automatically be set to valid.",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "precreated", "dormant", "valid", "invalid", "archived" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Discount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not authorized access"
+          },
+          "404" : {
+            "description" : "No discount found"
+          }
+        }
+      },
+      "get" : {
+        "summary" : "get personal discount",
+        "operationId" : "getDiscount",
+        "description" : "Retrieves a specific discount record.",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Discount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not authorized access"
+          },
+          "404" : {
+            "description" : "No discount found"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "parameters" : {
+      "companyidquery" : {
+        "name" : "companyid",
+        "in" : "query",
+        "description" : "ID of the company offering discount",
+        "required" : true,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      },
+      "companyidqueryoptional" : {
+        "name" : "companyid",
+        "in" : "query",
+        "description" : "ID of the company offering discount",
+        "required" : false,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      },
+      "offeridpath" : {
+        "name" : "offeridpath",
+        "in" : "path",
+        "description" : "ID of discount offering",
+        "required" : true,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      },
+      "offeridqueryoptional" : {
+        "name" : "discountid",
+        "in" : "query",
+        "description" : "ID of a personal discount",
+        "required" : false,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      },
+      "discountidpath" : {
+        "name" : "discountid",
+        "in" : "path",
+        "description" : "ID of a personal discount",
+        "required" : true,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      },
+      "accountidqueryoptional" : {
+        "name" : "discountid",
+        "in" : "query",
+        "description" : "ID of a personal discount",
+        "required" : false,
+        "schema" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "schemas" : {
+      "Offer" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Describes the discount in human readable text (i7n solution to come)"
+          },
+          "type" : {
+            "description" : "Type of discount. Defines how the discount works (i7n solution to come)",
+            "type" : "string",
+            "enum" : [ "static", "percentageoneitem", "percentageonebuy", "external" ]
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "Internal machine readable definition of discount"
+          },
+          "callbackuri" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "The callback uri for informing the company of discount creation The discount id and coupon code will be added as search parameters (discountid, couponcode)."
+          },
+          "createdby" : {
+            "readOnly" : true,
+            "type" : "string",
+            "description" : "Identifies the creator of the offer"
+          }
+        },
+        "required" : [ "id", "description", "createdby" ]
+      },
+      "Company" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Company name. Human readable."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A short description of the company (i7n to come)"
+          }
+        },
+        "required" : [ "id", "name" ]
+      },
+      "Discount" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Id number of discount",
+            "readOnly" : true
+          },
+          "offer" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Id number of offer"
+          },
+          "customerid" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Id number of the customer that received the discount",
+            "readOnly" : true
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "The code given to the customer",
+            "readOnly" : true
+          },
+          "creationdate" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          },
+          "status" : {
+            "description" : "Status of this discount code",
+            "type" : "string",
+            "enum" : [ "precreated", "dormant", "valid", "invalid", "archived" ]
+          },
+          "checksum" : {
+            "format" : "int64",
+            "description" : "Hash sum of the discount data",
+            "readOnly" : true
+          }
+        },
+        "required" : [ "id", "offer", "code", "creationdate" ]
+      }
+    }
+  }
+}
