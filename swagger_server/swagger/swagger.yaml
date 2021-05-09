@@ -1,0 +1,596 @@
+openapi: 3.0.0
+info:
+  title: Billogram DiscountCode API
+  description: Documents the API for an imaginary Discount Code micro service
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/private1481/DiscountCodes/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /companies:
+    get:
+      summary: search for companies
+      description: Searches for companies by name. Only returns companies the user
+        is authorized for.
+      operationId: search_companies
+      parameters:
+      - name: companyname
+        in: query
+        description: "Name of company you are looking for. Exact match. If name is\
+          \ not given, returns id of all found companies authorized for."
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+                x-content-type: application/json
+        "204":
+          description: No company found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: create company
+      description: Creates a company for discounts
+      operationId: create_company
+      requestBody:
+        description: Create a company
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        "400":
+          description: "invalid input, could not create company"
+        "403":
+          description: Not authorized to create
+        "409":
+          description: an existing item already exists
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /offers:
+    get:
+      summary: get company offers
+      description: Retrieves offers for a given company.
+      operationId: get_company_offers
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+                x-content-type: application/json
+        "204":
+          description: No offer found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: create offer
+      description: Creates a discount offer
+      operationId: create_offer
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Create an offer with the given parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        "400":
+          description: "invalid input, could not create offer"
+        "403":
+          description: Not authorized to create
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /offers/{offeridpath}:
+    get:
+      summary: get company offer
+      description: Retrieves a specific offer for given company.
+      operationId: get_company_offer
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: offeridpath
+        in: path
+        description: ID of discount offering
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        "403":
+          description: Not authorized access
+        "404":
+          description: No offer found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /discountcodes:
+    get:
+      summary: search for discount codes
+      description: "By passing in the appropriate options, you can search for available\
+        \ discount codes in the system"
+      operationId: search_discount_codes
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: discountid
+        in: query
+        description: ID of a personal discount
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: fromdate
+        in: query
+        description: define the earliest date/time of searched discounts
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: datetime
+      - name: todate
+        in: query
+        description: define the earliest date/time of searched discounts
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: datetime
+      - name: code
+        in: query
+        description: Discount code
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Start point in result set. For paging together with limit. 0
+          based (first record is 0)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: maximum number of records to return
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Discount'
+                x-content-type: application/json
+        "204":
+          description: No discount found
+        "400":
+          description: bad input parameter
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: create discount codes
+      description: Creates one or more (as requested) discount codes in the system
+        for the given company. If an account id is given the code is set to the valid
+        state (activated). Otherwise it is put in the dormant state (precreated) and
+        therefore available for later fetching/activation.
+      operationId: create_discount_codes
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: discountid
+        in: query
+        description: ID of a personal discount
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: results
+        in: query
+        description: Indicate if we want this method to return the created code object(s).
+          False may be useful when just precreating codes
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: true
+      - name: instances
+        in: query
+        description: Number of discount codes to create
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 1
+      responses:
+        "201":
+          description: items created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+        "400":
+          description: "invalid input, cannot create codes"
+        "403":
+          description: Not authorized to create discount codes
+        "409":
+          description: an existing item already exists
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /discountcodes/precreated:
+    post:
+      summary: fetch precreated discount code
+      description: Fetch a precreated unused discount code for a given account Creates
+        one or more (as requested) discount codes in the system for the given company
+      operationId: fetch_discount_code
+      parameters:
+      - name: companyid
+        in: query
+        description: ID of the company offering discount
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: accountid
+        in: query
+        description: Account id for the fetched discount code
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "201":
+          description: Precreated code retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+        "400":
+          description: "invalid input, cannot fetch codes"
+        "403":
+          description: Not authorized to fetch discount code
+        "500":
+          description: No precreated unused codes available
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /discountcodes/{discountid}:
+    get:
+      summary: get personal discount
+      description: Retrieves a specific discount record.
+      operationId: get_discount
+      parameters:
+      - name: discountid
+        in: path
+        description: ID of a personal discount
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+        "403":
+          description: Not authorized access
+        "404":
+          description: No discount found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: change discount status
+      description: Sets status of a specific discount record. May also attach an account
+        to the discount.
+      operationId: set_discount_status
+      parameters:
+      - name: discountid
+        in: query
+        description: ID of a personal discount
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: status
+        in: query
+        description: Wished new status. If not given the account id parameter is required
+          and status will automatically be set to valid.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - precreated
+          - dormant
+          - valid
+          - invalid
+          - archived
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+        "403":
+          description: Not authorized access
+        "404":
+          description: No discount found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    Offer:
+      required:
+      - createdby
+      - description
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        description:
+          type: string
+          description: Describes the discount in human readable text (i7n solution
+            to come)
+        type:
+          type: string
+          description: Type of discount. Defines how the discount works (i7n solution
+            to come)
+          enum:
+          - static
+          - percentageoneitem
+          - percentageonebuy
+          - external
+        value:
+          type: string
+          description: Internal machine readable definition of discount
+        callbackuri:
+          type: string
+          description: "The callback uri for informing the company of discount creation\
+            \ The discount id and coupon code will be added as search parameters (discountid,\
+            \ couponcode)."
+          format: uri
+        createdby:
+          type: string
+          description: Identifies the creator of the offer
+          readOnly: true
+      example:
+        createdby: createdby
+        callbackuri: http://example.com/aeiou
+        description: description
+        id: 0
+        type: static
+        value: value
+    Company:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+          description: Company name. Human readable.
+        description:
+          type: string
+          description: A short description of the company (i7n to come)
+      example:
+        name: name
+        description: description
+        id: 0
+    Discount:
+      required:
+      - code
+      - creationdate
+      - id
+      - offer
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id number of discount
+          format: int64
+          readOnly: true
+        offer:
+          type: integer
+          description: Id number of offer
+          format: int64
+        customerid:
+          type: integer
+          description: Id number of the customer that received the discount
+          format: int64
+          readOnly: true
+        code:
+          type: string
+          description: The code given to the customer
+          readOnly: true
+        creationdate:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: string
+          description: Status of this discount code
+          enum:
+          - precreated
+          - dormant
+          - valid
+          - invalid
+          - archived
+        checksum:
+          description: Hash sum of the discount data
+          format: int64
+          readOnly: true
+      example:
+        offer: 6
+        creationdate: 2000-01-23T04:56:07.000+00:00
+        code: code
+        customerid: 1
+        checksum: ""
+        id: 0
+        status: precreated
+  parameters:
+    companyidquery:
+      name: companyid
+      in: query
+      description: ID of the company offering discount
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int64
+    companyidqueryoptional:
+      name: companyid
+      in: query
+      description: ID of the company offering discount
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int64
+    offeridpath:
+      name: offeridpath
+      in: path
+      description: ID of discount offering
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    offeridqueryoptional:
+      name: discountid
+      in: query
+      description: ID of a personal discount
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int64
+    discountidpath:
+      name: discountid
+      in: path
+      description: ID of a personal discount
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+        format: int64
+    accountidqueryoptional:
+      name: discountid
+      in: query
+      description: ID of a personal discount
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        format: int64
+
