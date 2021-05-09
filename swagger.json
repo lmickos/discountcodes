@@ -471,7 +471,7 @@
         }
       },
       "accountidqueryoptional" : {
-        "name" : "discountid",
+        "name" : "accountid",
         "in" : "query",
         "description" : "ID of a personal discount",
         "required" : false,
