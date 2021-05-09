@@ -570,7 +570,7 @@
             "type" : "string",
             "enum" : [ "precreated", "dormant", "valid", "invalid", "archived" ]
           },
-          "checksum" : {
+          "checkhash" : {
             "format" : "int64",
             "description" : "Hash sum of the discount data",
             "readOnly" : true
