@@ -571,6 +571,7 @@
             "enum" : [ "precreated", "dormant", "valid", "invalid", "archived" ]
           },
           "checksum" : {
+            "type" : "integer",
             "format" : "int64",
             "description" : "Hash sum of the discount data",
             "readOnly" : true
