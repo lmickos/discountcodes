@@ -209,7 +209,10 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Discount"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Discount"
+                  }
                 }
               }
             }
@@ -279,7 +282,8 @@
             "type" : "integer",
             "format" : "int32",
             "minimum" : 0,
-            "maximum" : 100
+            "maximum" : 100,
+            "default" : 100
           },
           "required" : true
         } ],
