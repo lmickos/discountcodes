@@ -573,7 +573,8 @@
           "status" : {
             "description" : "Status of this discount code",
             "type" : "string",
-            "enum" : [ "precreated", "dormant", "valid", "invalid", "archived" ]
+            "nullable" : true,
+            "enum" : [ "precreated", "dormant", "valid", "invalid", "archived", null ]
           },
           "checksum" : {
             "type" : "integer",
