@@ -75,13 +75,20 @@ Considered architectures
         
 Chosen architecture
 -------------------
-
 I chose the third version - Some of the reasoning behind:
 * I focused on creating the spec first since I at first intended to focus on the architecture part
 * I like to the API first approach
 * I also like the many possible export opportunities given. 
 * I was also curious to try out the latest version of Swagger/SwaggerHub (with OAS 3.0 support).
   Task assignments are a good time to test new things.
+
+Other architectural considerations
+----------------------------------
+For persistence I chose to implement a lighweight in memory storage (non persistent)
+* Applying the (Martin Fowler) Data Mapper pattern making a future addition of a DB (SQL/NoSQL) easy
+* To keep simplicity in the assignment
+* To show my coding skills outside the generated code
+* Usable for mocking, testing and development.
 
 The API
 -------
