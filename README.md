@@ -130,6 +130,10 @@ Whats next?
 -----------
 The following things would be the logical continuation on the implementation and pinpoints things that have not been done in this implementation (yet)
 * Implement the remaining API endpoints
+* Add security to the API. 
+  - The login system is assumed in the api spec.
+  - I did not choose one solution not only out of time limitations, but also because the selected framework supports many usual technologies (tokens, JWT, OAuth etc). Personally I am fond of the JWT tokens and they would fit here giving the possibility to delegate to an external login system and still define not only authentication(who?) but also authorization (what may I do?). OAuth has similar support but requires a more complex and heavy implementation.
+  - Roles should be designated for companies, end-users, superadmin, and maybe more.
 * Write unit tests for the storage layer
 * Expand the automatically generated integration Test package 
 or setup in an external tool like Postman.
