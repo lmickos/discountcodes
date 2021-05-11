@@ -135,5 +135,6 @@ The following things would be the logical continuation on the implementation and
 or setup in an external tool like Postman.
 * Debug the system more
 * Import the OAS/Swagger file into Postman (using the OAS import support)
+* Implement a real DB integration in the storage_layer
 
 
