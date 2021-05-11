@@ -4,8 +4,10 @@ info:
   description: Documents the API for an imaginary Discount Code micro service
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/private1481/DiscountCodes/1.0.0
-  description: SwaggerHub API Auto Mocking
+  #- url: https://virtserver.swaggerhub.com/private1481/DiscountCodes/1.0.0
+  #  description: SwaggerHub API Auto Mocking
+  - url: http://localhost:8080
+    description: SwaggerHub API Auto Mocking
 paths:
   /companies:
     get:
@@ -174,6 +176,15 @@ paths:
         schema:
           type: integer
           format: int64
+      - name: accountid
+        in: query
+        description: ID of a personal discount
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
       - name: discountid
         in: query
         description: ID of a personal discount
@@ -213,16 +224,17 @@ paths:
         in: query
         description: Start point in result set. For paging together with limit. 0
           based (first record is 0)
-        required: true
+        required: false
         style: form
         explode: true
         schema:
           type: integer
           format: int32
+          default: 0
       - name: limit
         in: query
         description: maximum number of records to return
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -230,6 +242,7 @@ paths:
           minimum: 0
           type: integer
           format: int32
+          default: 100
       responses:
         "200":
           description: search results matching criteria
@@ -262,7 +275,7 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: discountid
+      - name: accountid
         in: query
         description: ID of a personal discount
         required: false
@@ -299,7 +312,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Discount'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Discount'
+                x-content-type: application/json
         "400":
           description: "invalid input, cannot create codes"
         "403":
@@ -380,6 +396,15 @@ paths:
       operationId: set_discount_status
       parameters:
       - name: discountid
+        in: path
+        description: ID of a personal discount
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: accountid
         in: query
         description: ID of a personal discount
         required: false
@@ -494,6 +519,10 @@ components:
           description: Id number of discount
           format: int64
           readOnly: true
+        company:
+          type: integer
+          description: Id number of company
+          format: int64
         offer:
           type: integer
           description: Id number of offer
@@ -514,22 +543,26 @@ components:
         status:
           type: string
           description: Status of this discount code
+          nullable: true
           enum:
           - precreated
           - dormant
           - valid
           - invalid
           - archived
+          - null
         checksum:
+          type: integer
           description: Hash sum of the discount data
           format: int64
           readOnly: true
       example:
-        offer: 6
+        offer: 1
         creationdate: 2000-01-23T04:56:07.000+00:00
         code: code
-        customerid: 1
-        checksum: ""
+        customerid: 5
+        checksum: 5
+        company: 6
         id: 0
         status: precreated
   parameters:
@@ -584,7 +617,7 @@ components:
         type: integer
         format: int64
     accountidqueryoptional:
-      name: discountid
+      name: accountid
       in: query
       description: ID of a personal discount
       required: false

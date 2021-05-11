@@ -3,7 +3,7 @@
 import sys
 from setuptools import setup, find_packages
 
-NAME = "DiscountCodeService"
+NAME = "swagger_server"
 VERSION = "1.0.0"
 # To install the library, run the following
 #
@@ -20,7 +20,7 @@ setup(
     description="Billogram DiscountCode API",
     author_email="",
     url="",
-    keywords=["Billogram DiscountCode API"],
+    keywords=["Swagger", "Billogram DiscountCode API"],
     install_requires=REQUIRES,
     packages=find_packages(),
     package_data={'': ['swagger/swagger.yaml']},

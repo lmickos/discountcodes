@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.object import Object  # noqa: F401,E501
 from swagger_server import util
 
 
@@ -15,11 +14,13 @@ class Discount(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: int=None, offer: int=None, customerid: int=None, code: str=None, creationdate: datetime=None, status: str=None, checksum: Object=None):  # noqa: E501
+    def __init__(self, id: int=None, company: int=None, offer: int=None, customerid: int=None, code: str=None, creationdate: datetime=None, status: str=None, checksum: int=None):  # noqa: E501
         """Discount - a model defined in Swagger
 
         :param id: The id of this Discount.  # noqa: E501
         :type id: int
+        :param company: The company of this Discount.  # noqa: E501
+        :type company: int
         :param offer: The offer of this Discount.  # noqa: E501
         :type offer: int
         :param customerid: The customerid of this Discount.  # noqa: E501
@@ -31,20 +32,22 @@ class Discount(Model):
         :param status: The status of this Discount.  # noqa: E501
         :type status: str
         :param checksum: The checksum of this Discount.  # noqa: E501
-        :type checksum: Object
+        :type checksum: int
         """
         self.swagger_types = {
             'id': int,
+            'company': int,
             'offer': int,
             'customerid': int,
             'code': str,
             'creationdate': datetime,
             'status': str,
-            'checksum': Object
+            'checksum': int
         }
 
         self.attribute_map = {
             'id': 'id',
+            'company': 'company',
             'offer': 'offer',
             'customerid': 'customerid',
             'code': 'code',
@@ -53,6 +56,7 @@ class Discount(Model):
             'checksum': 'checksum'
         }
         self._id = id
+        self._company = company
         self._offer = offer
         self._customerid = customerid
         self._code = code
@@ -95,6 +99,29 @@ class Discount(Model):
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
+
+    @property
+    def company(self) -> int:
+        """Gets the company of this Discount.
+
+        Id number of company  # noqa: E501
+
+        :return: The company of this Discount.
+        :rtype: int
+        """
+        return self._company
+
+    @company.setter
+    def company(self, company: int):
+        """Sets the company of this Discount.
+
+        Id number of company  # noqa: E501
+
+        :param company: The company of this Discount.
+        :type company: int
+        """
+
+        self._company = company
 
     @property
     def offer(self) -> int:
@@ -212,7 +239,7 @@ class Discount(Model):
         :param status: The status of this Discount.
         :type status: str
         """
-        allowed_values = ["precreated", "dormant", "valid", "invalid", "archived"]  # noqa: E501
+        allowed_values = ["precreated", "dormant", "valid", "invalid", "archived", "", None]  # noqa: E501
         if status not in allowed_values:
             raise ValueError(
                 "Invalid value for `status` ({0}), must be one of {1}"
@@ -222,24 +249,24 @@ class Discount(Model):
         self._status = status
 
     @property
-    def checksum(self) -> Object:
+    def checksum(self) -> int:
         """Gets the checksum of this Discount.
 
         Hash sum of the discount data  # noqa: E501
 
         :return: The checksum of this Discount.
-        :rtype: Object
+        :rtype: int
         """
         return self._checksum
 
     @checksum.setter
-    def checksum(self, checksum: Object):
+    def checksum(self, checksum: int):
         """Sets the checksum of this Discount.
 
         Hash sum of the discount data  # noqa: E501
 
         :param checksum: The checksum of this Discount.
-        :type checksum: Object
+        :type checksum: int
         """
 
         self._checksum = checksum
