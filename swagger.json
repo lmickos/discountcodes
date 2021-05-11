@@ -313,15 +313,6 @@
     "/discountcodes/precreated" : {
       "parameters" : [ {
         "$ref" : "#/components/parameters/companyidquery"
-      }, {
-        "in" : "query",
-        "name" : "companyid",
-        "description" : "Id of the company giving the discount code",
-        "schema" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "required" : true
       } ],
       "post" : {
         "parameters" : [ {
@@ -548,6 +539,11 @@
             "format" : "int64",
             "description" : "Id number of discount",
             "readOnly" : true
+          },
+          "company" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Id number of company"
           },
           "offer" : {
             "type" : "integer",
