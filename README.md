@@ -35,7 +35,7 @@ The solution
 
 Worth looking at
 ----------------
-* The API documentation in HTML 
+* The API documentation in HTML (https://lmickos.github.io/discountcodes/api.html)
 * The Swagger (OAS 3.0) file in swagger_server/swagger/swagger.yaml
 * All code in the swagger_server/storage_layer (implementes the 'Data Mapper' pattern).
   - Yes, it could be neater implemented, but it works for mockup...
