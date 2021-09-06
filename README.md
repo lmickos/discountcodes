@@ -70,7 +70,7 @@ Considered architectures
     - Possible to export Client support packages
   * Drawbacks
     - Hard to handle changes in the api. Requires a good separation between generated code and written code.
-    - Depending on complex frameworks with a learning code that increases with the complexity of the api.
+    - Depending on complex frameworks with a learning curve that increases with the complexity of the api.
     - Tends to become complex and problems may be hard to troubleshoot and solve/workaround
         
 Chosen architecture
