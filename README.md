@@ -97,7 +97,7 @@ the Flask/Connexion extension. The API spec uses OAS version 3.0. Likewise the A
 
 It may sometimes be hard to see the difference between what I created and what was automatically generated code.
 I primarily wrote:
-* All code in the swagger_server/storage_layer (implementes the 'Data Mapper' pattern).
+* All code in the swagger_server/storage_layer (implements the 'Data Mapper' pattern).
 * Logic of all the implemented functions in swagger_server/controllers/default_controller
 
 Some of the code may not be optimally structured, but I prioritized hard and tried to keep close to the 
